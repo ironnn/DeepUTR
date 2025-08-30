@@ -1,0 +1,57 @@
+data/*
+
+# Python
+__pycache__/
+*.pyc
+nohup.out
+
+*.pkl
+*.pt
+*.npy
+*.csv
+*.tsv
+*.parquet
+*.fa
+*.ckpt
+*.h5
+*.tar
+*.gz
+*.zip
+*.tar.gz
+*.tar.bz2
+*.tar.xz
+*.tar.lz
+*.tar.lzma
+*.tar.zst
+*.fasta
+*.fai
+*.fxi
+*.j4
+*.png
+*.txt   
+*.pdf
+
+# Jupyter
+.ipynb_checkpoints/
+
+# VSCode
+.vscode/
+results/
+lightning_logs/
+checkpoints/
+
+# Mac/Linux
+.DS_Store
+
+
+*.ndb
+*.nhr
+*.nin
+*.nsq
+*.ntf
+*.nto
+*.not
+*.rds
+*.db
+
+*.bwbkp/
