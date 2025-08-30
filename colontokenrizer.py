@@ -4,6 +4,8 @@ from typing import List, Optional, Dict, Sequence, Tuple
 from transformers import PreTrainedTokenizer
 import pandas as pd
 
+#This code is inspired by the following repository:https://github.com/kuleshov-group/caduceus/blob/main/caduceus/tokenization_caduceus.py
+
 class colonTokenizer(PreTrainedTokenizer):
 
     model_input_names = ["input_ids"]
