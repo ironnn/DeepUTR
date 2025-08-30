@@ -20,6 +20,7 @@ Follow the instructions below to set up the environment and install the necessar
 Clone this repository to your local machine and navigate to the project directory:
 
 git clone https://github.com/ironnn/DeepUTR.git
+
 cd DeepUTR
 
 ### Step 2: Set Up Conda Environment
