@@ -3,6 +3,10 @@ import torch
 from torch import nn
 from mamba_ssm.modules.mamba_simple import Mamba
 
+# This code is directly borrowed from the following repository:
+# Caduceus repository (https://github.com/kuleshov-group/caduceus/blob/main/caduceus/modeling_rcps.py).
+# This part of the code provides insights into the modeling techniques used for RNA sequence prediction.
+
 class BiMambaWrapper(nn.Module):
     """Thin wrapper around Mamba to support bi-directionality."""
 

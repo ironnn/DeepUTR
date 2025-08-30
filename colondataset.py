@@ -12,7 +12,7 @@ class FastaDataset(object):
     def from_file(cls, fasta_file, tokenizer=None):
         sequence_labels, sequence_strs = [], []
         for record in SeqIO.parse(fasta_file, "fasta"):
-            sequence_labels.append(record.description)  # description含全部header内容
+            sequence_labels.append(record.description)  
             sequence_strs.append(str(record.seq))
         return cls(sequence_labels, sequence_strs, tokenizer=tokenizer)
 
@@ -38,14 +38,12 @@ class FastaDataset(object):
 
         if self.tokenizer:
             tokenized = self.tokenizer(sequence)
-            # ====== 转 tensor，非常重要 ======
             d['input_ids'] = torch.tensor(tokenized["input_ids"], dtype=torch.long)
             d['attention_mask'] = torch.tensor(tokenized["attention_mask"], dtype=torch.bool)
         else:
             d['input_ids'] = None
             d['attention_mask'] = None
 
-        # 补充：cell_line_index, rna, rpf也建议直接转为tensor
         d['cell_line_index'] = torch.tensor(d['cell_line_index'], dtype=torch.long)
         d['rna'] = torch.tensor(d['rna'], dtype=torch.float32)
         d['rpf'] = torch.tensor(d['rpf'], dtype=torch.float32)

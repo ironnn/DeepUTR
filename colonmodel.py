@@ -75,7 +75,7 @@ class jambaregression(nn.Module):
         max_seq_len=4096,
         fused_add_norm=True,
         residual_in_fp32=True,
-        transformer_depth=2,  # PerformerLM 的 depth
+        transformer_depth=2,
     ):
         super().__init__()
 
@@ -88,13 +88,12 @@ class jambaregression(nn.Module):
         self.residual_in_fp32 = residual_in_fp32
         self.transformer_depth = transformer_depth
 
-        # 直接用 PerformerLM 作为 embedding + attention + MLP
         self.performer = PerformerLM(
             num_tokens=vocab_size,
             max_seq_len=max_seq_len,
             dim=d_model,
-            depth=transformer_depth,         # 只用一层
-            heads=4,  # PerformerLM 的 heads
+            depth=transformer_depth,        
+            heads=4,
             causal=False,
             nb_features=64,
             feature_redraw_interval=1000,
@@ -114,7 +113,6 @@ class jambaregression(nn.Module):
             shift_tokens=True,
         )
 
-        # 后面就是 mamba block，原 create_block 保持不变
         self.mamba_blocks = nn.ModuleList([
             create_block(
                 d_model=d_model,
@@ -129,13 +127,10 @@ class jambaregression(nn.Module):
         ])
         
         
-        # 卷积层结构：保持原样
         self.conv1 = nn.Conv1d(in_channels=d_model, out_channels=16, kernel_size=3, stride=2, padding=1)
         self.conv2 = nn.Conv1d(in_channels=16, out_channels=8, kernel_size=3, stride=2, padding=1)
         self.conv3 = nn.Conv1d(in_channels=8, out_channels=4, kernel_size=3, stride=2, padding=1)
 
-        # 非线性全连接头（无 Dropout）
-        # self.fc1 = nn.Linear(8, 24)
         self.silu = nn.SiLU()
         self.fc2 = nn.Linear(24, 1)
         
@@ -146,12 +141,10 @@ class jambaregression(nn.Module):
     def forward(self, x, attention_mask=None, tpm=None, cell_type=None, **kwargs):
         # x: [B, L]  token ids
 
-        # Performer做embedding + attention
         hidden_states = self.performer(x, mask=attention_mask, return_encodings=True)  # [B, L, D]
         residual = None
 
 
-        # 经过若干mamba block
         for block in self.mamba_blocks:
             hidden_states, residual = block(hidden_states, residual)
 
@@ -159,7 +152,6 @@ class jambaregression(nn.Module):
             mask = attention_mask.unsqueeze(-1).to(hidden_states.dtype)  # (B, L, 1)
             hidden_states = hidden_states * mask  # zero out padding tokens
 
-        # --- 卷积、池化、MLP ---
         x = hidden_states.permute(0, 2, 1)  # (B, D, L)
         x = self.conv1(x)                   # (B, C1, L1)
         x = self.conv2(x)                   # (B, C2, L2)
@@ -173,8 +165,6 @@ class jambaregression(nn.Module):
         cell_emb = self.celltype_emb(cell_type.squeeze(-1))     # (B, C3*2)
 
         tpm = tpm.unsqueeze(1)
-
-        # tpm: [B, 1]，直接拼接
         all_feat = torch.cat([agg, tpm, cell_emb], dim=1)  # (B, C3*2+C3//2+1)
 
         x = self.fc1(all_feat)

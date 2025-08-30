@@ -19,11 +19,9 @@ class colonTokenizer(PreTrainedTokenizer):
         self.characters = characters
         self.model_max_length = model_max_length
 
-        # === 特殊 token 列表，确保 [PAD] 是 ID=0 ===
         self.special_tokens = [pad_token]
         self.base_tokens = list(characters)
 
-        # === vocab 构建 ===
         self._vocab_str_to_int = {
             **{tok: i for i, tok in enumerate(self.special_tokens)},
             **{b: len(self.special_tokens) + i for i, b in enumerate(self.base_tokens)}
@@ -89,14 +87,11 @@ class colonTokenizer(PreTrainedTokenizer):
 
     def __call__(self, text, **kwargs):
 
-        # Tokenize to base tokens only
         tokens = self._tokenize(text)
         input_ids = [self._convert_token_to_id(tok) for tok in tokens]
         
-        # mask: 只要不是pad_token就为1
         attention_mask = [0 if tok == self.pad_token else 1 for tok in tokens]
 
-        # === 截断 ===
         if len(input_ids) > self.model_max_length:
             input_ids = input_ids[:self.model_max_length]
             attention_mask = attention_mask[:self.model_max_length]

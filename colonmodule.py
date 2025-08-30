@@ -19,7 +19,6 @@ class colonmodule(pl.LightningModule):
         self.best_val_r2 = float("-inf")
         self.best_epoch = -1
 
-        # 初始化属性，防止 AttributeError
         self.current_train_loss = None
         self.current_train_r2 = None
 
@@ -61,7 +60,7 @@ class colonmodule(pl.LightningModule):
         return (loss * soft_hard).mean()
 
     def general_step(self, batch, batch_idx=None):
-        y_true = batch["rpf"].float().unsqueeze(-1)   # 目标是 rpf
+        y_true = batch["rpf"].float().unsqueeze(-1)   
         pred = self(batch)
         loss = self.criterion(pred, y_true)
         r2 = self.compute_r2(y_true, pred)
@@ -91,13 +90,13 @@ class colonmodule(pl.LightningModule):
         self.current_train_r2 = avg_r2
         self.train_outputs.clear()
 
-         # === 1. 保存权重 ===
+
         weights_dir = "./pure_weights_colon"
         os.makedirs(weights_dir, exist_ok=True)
         weight_path = os.path.join(weights_dir, f"epoch{self.current_epoch:02d}.pt")
         torch.save(self.model.state_dict(), weight_path)
 
-        # === 2. 保存 config（自己整理想保留的参数）===
+
         config = {
             "d_model": self.model.d_model,
             "num_mamba_blocks": self.model.num_mamba_blocks,
@@ -105,7 +104,7 @@ class colonmodule(pl.LightningModule):
             "vocab_size": self.model.vocab_size,
             "max_seq_len": self.model.max_seq_len,
             "lr": self.lr,
-            # 其它你想保存的参数
+
         }
         config_path = os.path.join(weights_dir, f"epoch{self.current_epoch:02d}_config.yaml")
         with open(config_path, "w") as f:
