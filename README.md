@@ -13,8 +13,22 @@ This project provides a deep learning-based approach to predict the translation 
 
 ## Installation
 
-Clone this repository and navigate to the project directory:
+Follow the instructions below to set up the environment and install the necessary dependencies.
 
-```bash
+### Step 1: Clone the Repository
+
+Clone this repository to your local machine and navigate to the project directory:
+
 git clone https://github.com/ironnn/DeepUTR.git
 cd DeepUTR
+
+### Step 2: Set Up Conda Environment
+
+The environment dependencies are listed in the environment.yml file. To create a Conda environment with the necessary dependencies, use the following command:
+
+conda env create -f environment.yml
+
+
+### Step 3: Activate the Conda Environment
+conda activate deeputr
+
