@@ -1,5 +1,7 @@
 data/*
 
+*.ipynb
+
 # Python
 __pycache__/
 *.pyc

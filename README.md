@@ -7,7 +7,7 @@ DeepUTR is a model designed to predict the translation ability (ribosome profili
 
 - **Model Training**: Train the model using `train.py`.
 - **Inference and Prediction**: Perform inference and TE prediction using `model_inference.py`.
-
+- **Pre-trained Weights**: A trained model is available in the `pure_weights_colon/` directory.
 ## Installation
 
 Follow the instructions below to set up the environment and install the necessary dependencies.
@@ -29,4 +29,3 @@ conda env create -f environment.yml
 
 ### Step 3: Activate the Conda Environment
 conda activate deeputr
-
