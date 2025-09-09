@@ -61,7 +61,7 @@ class GatedMoE(nn.Module):
             idx_k = topk_indices[:, k]  # [N]
             for expert_id in range(self.num_experts):
                 mask = (idx_k == expert_id)               # [N]
-                indices = mask.nonzero(as_tuple=False).squeeze(1)  # 选中 token 的位置
+                indices = mask.nonzero(as_tuple=False).squeeze(1)
                 if indices.numel() == 0:
                     continue
                 if indices.numel() > capacity:
